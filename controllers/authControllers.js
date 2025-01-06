@@ -7,10 +7,11 @@ const login = async (req, res) => {
       email,
       password,
     });
-    if (admin) {
+    if (provider) {
       res.status(200).json({
         message: "Login successful",
         data: provider,
+        success: true,
       });
     }
   } catch (error) {
