@@ -1,19 +1,17 @@
-const Admin = require('../models/admin');
-
-
+const Providers = require('../models/providers');
 
 
 const login = async (req, res) => {
     try{
         const {email, password} = req.body;
-        const admin = await Admin.findOne({
+        const provider = await Providers.findOne({
             email,
             password
         });
         if(admin){
             res.status(200).json({
                 message: 'Login successful',
-                admin
+                data : provider
         });
     }
     }catch(error){
