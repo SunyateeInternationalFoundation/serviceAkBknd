@@ -30,10 +30,12 @@ const login = async (req, res) => {
 const signUp = async (req, res) => {
   try {
     const provider = new Providers(req.body);
-    await provider.save();
+    const newProvider = await provider.save();
+
     res.status(201).json({
       message: "Provider created successfully",
       success: true,
+      data: newProvider,
     });
   } catch (error) {
     res.status(500).json({
