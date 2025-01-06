@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
 
 const providerSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  phone: { type: String, required: true },
-  email: { type: String, required: false },
-  serviceName: { type: String, required: true },
-  address: { type: String, required: true },
-  city: { type: String, required: true },
-  pincode: { type: String, required: true },
-  password: { type: String, required: true },
+  name: { type: String,  },
+  phone: { type: String,  },
+  email: { type: String, required: true, unique: true},
+  serviceName: { type: String,},
+  address: { type: String, },
+  city: { type: String,},
+  pincode: { type: String},
+  password: { type: String },
 });
 
 const Provider = mongoose.model("providers", providerSchema);

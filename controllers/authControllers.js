@@ -13,14 +13,37 @@ const login = async (req, res) => {
         data: provider,
         success: true,
       });
+    } else {
+      res.status(400).json({
+        message: "Provider not found",
+        success: false,
+      });
     }
   } catch (error) {
     res.status(500).json({
       message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+const signUp = async (req, res) => {
+  try {
+    const provider = new Providers(req.body);
+    await provider.save();
+    res.status(201).json({
+      message: "Provider created successfully",
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
     });
   }
 };
 
 module.exports = {
   login,
+  signUp,
 };
