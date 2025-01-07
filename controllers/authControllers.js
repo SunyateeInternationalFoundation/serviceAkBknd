@@ -27,8 +27,7 @@ const login = async (req, res) => {
         data: provider,
         success: true,
       });
-    }
-    else {
+    } else {
       res.status(400).json({
         message: "Provider not found",
         success: false,
@@ -36,7 +35,8 @@ const login = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      message: "Server error", error: error.message,
+      message: "Server error",
+      error: error.message,
     });
   }
 };
@@ -61,10 +61,11 @@ const signUp = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: "Server error", error: error.message,
+      message: "Server error",
+      error: error.message,
     });
   }
-}
+};
 
 module.exports = {
   login,
