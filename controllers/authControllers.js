@@ -1,13 +1,27 @@
 const Providers = require("../models/providers");
+const bcrypt = require("bcrypt");
+
+function isStringInvalid(string) {
+  return string === undefined || string.length === 0;
+}
 
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    if(isStringInvalid(email) || isStringInvalid(password)){
+      return res.status(400).json({success: false, message: `Email and password is missing`})
+    }
     const provider = await Providers.findOne({
       email,
-      password,
     });
     if (provider) {
+      const match = bcrypt.compare(password, provider.password);
+      if (!match) {
+        return res.status(400).json({
+          message: "Password is wrong",
+          success: false,
+        });
+      }
       res.status(200).json({
         message: "Login successful",
         data: provider,
@@ -29,11 +43,21 @@ const login = async (req, res) => {
 
 const signUp = async (req, res) => {
   try {
-    const provider = new Providers(req.body);
+    const {name , email, password , phone} = req.body;
+    if(isStringInvalid(name) || isStringInvalid(email) || isStringInvalid(password)){
+      return res.status(400).json({success: false, message: `Name, email and password is missing`})
+    }
+    const saltrounds = 10;
+    const hashedPassword = bcrypt.hash(password, saltrounds , async(err, hash) => {
+      if(hash){
+    const provider = new Providers({name, email, password:hash, phone});
     await provider.save();
     res.status(201).json({
       message: "Provider created successfully",
       success: true,
+      data: {name, email, phone ,providerId: provider._id},
+      });
+    }
     });
   } catch (error) {
     res.status(500).json({
