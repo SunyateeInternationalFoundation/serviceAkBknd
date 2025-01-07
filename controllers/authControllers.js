@@ -67,7 +67,44 @@ const signUp = async (req, res) => {
   }
 };
 
+const getProvider = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const providers = await Providers.findById(id)
+    console.log(providers)
+    res.status(200).json({
+      message: "Providers fetched successfully",
+      success: true,
+      data: providers,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+}
+
+const updateProvider = async(req, res)=>{
+   try {
+    const {id} = req.params;
+    const providers = await Providers.findByIdAndUpdate(id,req.body)
+    console.log(providers)
+    res.status(201).json({
+      message: "Provider updated successfully",
+      success: true,
+    });
+   } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+   }
+}
+
 module.exports = {
   login,
   signUp,
+  getProvider,
+  updateProvider
 };
