@@ -1,4 +1,4 @@
-const Providers = require("../models/providers");
+const {Providers , Services  } = require("../models/providers");
 const bcrypt = require("bcrypt");
 
 function isStringInvalid(string) {
@@ -71,11 +71,12 @@ const getProvider = async (req, res) => {
   try {
     const {id} = req.params;
     const providers = await Providers.findById(id)
-    console.log(providers)
+    const services = await Services.find();
     res.status(200).json({
       message: "Providers fetched successfully",
       success: true,
       data: providers,
+      services: services
     });
   } catch (error) {
     res.status(500).json({
@@ -89,7 +90,7 @@ const updateProvider = async(req, res)=>{
    try {
     const {id} = req.params;
     const providers = await Providers.findByIdAndUpdate(id,req.body)
-    console.log(providers)
+    
     res.status(201).json({
       message: "Provider updated successfully",
       success: true,
