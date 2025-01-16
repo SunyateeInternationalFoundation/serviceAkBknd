@@ -1,4 +1,4 @@
-const {Providers , Services  } = require("../models/providers");
+const {Providers , Services, Bookings  } = require("../models/providers");
 const bcrypt = require("bcrypt");
 
 function isStringInvalid(string) {
@@ -103,9 +103,46 @@ const updateProvider = async(req, res)=>{
    }
 }
 
+const myBooking = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const myBookings = await Bookings.find({ providerId: id });
+    res.status(200).json({
+      message: "My Bookings fetched successfully",
+      success: true,
+      data: myBookings,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+const updateBookingStatus = async (req, res) => {
+  try {
+    const { id, status } = req.body;
+    const booking = await Bookings.findByIdAndUpdate(id, { accepted: status==="true" }).populate("providers");
+    res.status(201).json({
+      message: "Booking status updated successfully",
+      success: true,
+      data: booking,
+    });
+    console.log(booking)
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   login,
   signUp,
   getProvider,
-  updateProvider
+  updateProvider,
+  myBooking,
+  updateBookingStatus,
 };
