@@ -1,4 +1,9 @@
-const {Providers , Services  } = require("../models/providers");
+const {
+  Providers,
+  Services,
+  Bookings,
+  Parents,
+} = require("../models/providers");
 const bcrypt = require("bcrypt");
 
 function isStringInvalid(string) {
@@ -8,8 +13,10 @@ function isStringInvalid(string) {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if(isStringInvalid(email) || isStringInvalid(password)){
-      return res.status(400).json({success: false, message: `Email and password is missing`})
+    if (isStringInvalid(email) || isStringInvalid(password)) {
+      return res
+        .status(400)
+        .json({ success: false, message: `Email and password is missing` });
     }
     const provider = await Providers.findOne({
       email,
@@ -43,22 +50,38 @@ const login = async (req, res) => {
 
 const signUp = async (req, res) => {
   try {
-    const {name , email, password , phone} = req.body;
-    if(isStringInvalid(name) || isStringInvalid(email) || isStringInvalid(password)){
-      return res.status(400).json({success: false, message: `Name, email and password is missing`})
-    }
-    const saltrounds = 10;
-    const hashedPassword = bcrypt.hash(password, saltrounds , async(err, hash) => {
-      if(hash){
-    const provider = new Providers({name, email, password:hash, phone});
-    await provider.save();
-    res.status(201).json({
-      message: "Provider created successfully",
-      success: true,
-      data: {name, email, phone ,providerId: provider._id},
+    const { name, email, password, phone } = req.body;
+    if (
+      isStringInvalid(name) ||
+      isStringInvalid(email) ||
+      isStringInvalid(password)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: `Name, email and password is missing`,
       });
     }
-    });
+    const saltrounds = 10;
+    const hashedPassword = bcrypt.hash(
+      password,
+      saltrounds,
+      async (err, hash) => {
+        if (hash) {
+          const provider = new Providers({
+            name,
+            email,
+            password: hash,
+            phone,
+          });
+          await provider.save();
+          res.status(201).json({
+            message: "Provider created successfully",
+            success: true,
+            data: { name, email, phone, providerId: provider._id },
+          });
+        }
+      }
+    );
   } catch (error) {
     res.status(500).json({
       message: "Server error",
@@ -69,14 +92,14 @@ const signUp = async (req, res) => {
 
 const getProvider = async (req, res) => {
   try {
-    const {id} = req.params;
-    const providers = await Providers.findById(id)
+    const { id } = req.params;
+    const providers = await Providers.findById(id);
     const services = await Services.find();
     res.status(200).json({
       message: "Providers fetched successfully",
       success: true,
       data: providers,
-      services: services
+      services: services,
     });
   } catch (error) {
     res.status(500).json({
@@ -84,28 +107,114 @@ const getProvider = async (req, res) => {
       error: error.message,
     });
   }
-}
+};
 
-const updateProvider = async(req, res)=>{
-   try {
-    const {id} = req.params;
-    const providers = await Providers.findByIdAndUpdate(id,req.body)
-    
+const updateProvider = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const providers = await Providers.findByIdAndUpdate(id, req.body);
+
     res.status(201).json({
       message: "Provider updated successfully",
       success: true,
     });
-   } catch (error) {
+  } catch (error) {
     res.status(500).json({
       message: "Server error",
       error: error.message,
     });
-   }
-}
+  }
+};
+
+const myBooking = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const myBookings = await Bookings.find({ providerId: id });
+    res.status(200).json({
+      message: "My Bookings fetched successfully",
+      success: true,
+      data: myBookings,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+// const updateBookingStatus = async (req, res) => {
+//   try {
+//     const { id, status } = req.body;
+//     const booking = await Bookings.findByIdAndUpdate(id, { accepted: status==="true" }).populate("providers");
+//     res.status(201).json({
+//       message: "Booking status updated successfully",
+//       success: true,
+//       data: booking,
+//     });
+//     console.log(booking)
+//   } catch (error) {
+//     res.status(500).json({
+//       message: "Server error",
+//       error: error.message,
+//     });
+//   }
+// }
+const updateBookingStatus = async (req, res) => {
+  try {
+    const { id, status } = req.body;
+    console.log("status", typeof status);
+    const updateFields = {
+      accepted: status,
+      status: status === "true" ? "On Going" : "Cancelled",
+    };
+    console.log("updatedFiels", updateFields);
+    const booking = await Bookings.findByIdAndUpdate(id, updateFields, {
+      new: true,
+    })
+      .populate({
+        path: "providerId", // Reference field
+
+        strictPopulate: false, // Optional (enabled by default)
+      }) // Populate provider details
+      .populate({
+        path: "serviceId", // Reference field
+
+        strictPopulate: false, // Optional (enabled by default)
+      }) // Populate service details
+      .populate({
+        path: "parentId", // Reference field
+
+        strictPopulate: false, // Optional (enabled by default)
+      });
+
+    if (!booking) {
+      return res.status(404).json({
+        message: "Booking not found",
+        success: false,
+      });
+    }
+
+    res.status(200).json({
+      message: "Booking status updated successfully",
+      success: true,
+      data: booking,
+    });
+
+    console.log(booking);
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
   login,
   signUp,
   getProvider,
-  updateProvider
+  updateProvider,
+  myBooking,
+  updateBookingStatus,
 };
