@@ -18,6 +18,6 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Database connection error:", err));
 
-app.listen(5000, () => {
+app.listen(5003, () => {
   console.log("Server is running on port 5000");
 });
