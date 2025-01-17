@@ -24,11 +24,12 @@ const providerSchema = new mongoose.Schema({
 });
 const servicesSchema = new mongoose.Schema({});
 const parentsSchema = new mongoose.Schema({});
+const ChildSchema = new mongoose.Schema({});
 const serviceBookingsSchema = new mongoose.Schema(
   {
     childId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "children",
+      ref: "childrens",
       required: false,
     },
     providerId: {
@@ -68,7 +69,7 @@ const serviceBookingsSchema = new mongoose.Schema(
 );
 
 const Providers = mongoose.model("providers", providerSchema);
-
+const Child = mongoose.model("childrens", ChildSchema);
 const Services = mongoose.model("services", servicesSchema);
 const Parents = mongoose.model("parents", parentsSchema);
 const Bookings = mongoose.model("servicebookings", serviceBookingsSchema);
@@ -78,4 +79,5 @@ module.exports = {
   Services,
   Bookings,
   Parents,
+  Child,
 };

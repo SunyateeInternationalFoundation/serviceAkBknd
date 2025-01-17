@@ -3,6 +3,7 @@ const {
   Services,
   Bookings,
   Parents,
+  Child,
 } = require("../models/providers");
 const bcrypt = require("bcrypt");
 
@@ -129,7 +130,27 @@ const updateProvider = async (req, res) => {
 const myBooking = async (req, res) => {
   try {
     const { id } = req.params;
-    const myBookings = await Bookings.find({ providerId: id });
+    const myBookings = await Bookings.find({ providerId: id })
+      .populate({
+        path: "providerId", // Reference field
+
+        strictPopulate: false, // Optional (enabled by default)
+      }) // Populate provider details
+      .populate({
+        path: "serviceId", // Reference field
+
+        strictPopulate: false, // Optional (enabled by default)
+      }) // Populate service details
+      .populate({
+        path: "parentId", // Reference field
+
+        strictPopulate: false, // Optional (enabled by default)
+      })
+      .populate({
+        path: "childId", // Reference field
+
+        strictPopulate: false, // Optional (enabled by default)
+      });
     res.status(200).json({
       message: "My Bookings fetched successfully",
       success: true,
