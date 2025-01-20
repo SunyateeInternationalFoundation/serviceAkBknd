@@ -131,25 +131,26 @@ const myBooking = async (req, res) => {
   try {
     const { id } = req.params;
     const myBookings = await Bookings.find({ providerId: id })
+      .sort({ date: -1 })
+      .sort({ time: -1 })
       .populate({
-        path: "providerId", // Reference field
+        path: "providerId",
 
-        strictPopulate: false, // Optional (enabled by default)
-      }) // Populate provider details
-      .populate({
-        path: "serviceId", // Reference field
-
-        strictPopulate: false, // Optional (enabled by default)
-      }) // Populate service details
-      .populate({
-        path: "parentId", // Reference field
-
-        strictPopulate: false, // Optional (enabled by default)
+        strictPopulate: false,
       })
       .populate({
-        path: "childId", // Reference field
+        path: "serviceId",
 
-        strictPopulate: false, // Optional (enabled by default)
+        strictPopulate: false,
+      })
+      .populate({
+        path: "parentId",
+
+        strictPopulate: false,
+      })
+      .populate({
+        path: "childId",
+        strictPopulate: false,
       });
     res.status(200).json({
       message: "My Bookings fetched successfully",
@@ -194,19 +195,19 @@ const updateBookingStatus = async (req, res) => {
       new: true,
     })
       .populate({
-        path: "providerId", // Reference field
+        path: "providerId",
 
-        strictPopulate: false, // Optional (enabled by default)
-      }) // Populate provider details
+        strictPopulate: false,
+      })
       .populate({
-        path: "serviceId", // Reference field
+        path: "serviceId",
 
-        strictPopulate: false, // Optional (enabled by default)
-      }) // Populate service details
+        strictPopulate: false,
+      })
       .populate({
-        path: "parentId", // Reference field
+        path: "parentId",
 
-        strictPopulate: false, // Optional (enabled by default)
+        strictPopulate: false,
       });
 
     if (!booking) {
