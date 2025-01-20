@@ -16,11 +16,11 @@ const isStringInvalid = (str, type = "string") => {
   }
 
   if (type === "phone") {
-    const phoneRegex = /^\+?[1-9]\d{1,14}$/; // E.164 international phone format
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
     return !phoneRegex.test(str.trim());
   }
 
-  return false; // Valid string
+  return false;
 };
 const login = async (req, res) => {
   try {
