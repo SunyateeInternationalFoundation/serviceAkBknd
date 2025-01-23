@@ -28,11 +28,13 @@ const login = async (req, res) => {
     if (isStringInvalid(email, "email") || isStringInvalid(password)) {
       return res
         .status(400)
-        .json({ success: false, message: `Email and password is missing` });
+        .json({ success: false, message: "Email and password is missing" });
     }
+    console.log(email)
     const provider = await Providers.findOne({
       email,
     });
+    console.log(provider)
     if (provider) {
       const match = bcrypt.compare(password, provider.password);
       if (!match) {
@@ -70,7 +72,7 @@ const signUp = async (req, res) => {
     ) {
       return res.status(400).json({
         success: false,
-        message: `Name, email and password is missing`,
+        message: "Name, email and password is missing",
       });
     }
     const saltrounds = 10;
