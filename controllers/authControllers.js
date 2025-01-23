@@ -245,6 +245,18 @@ const updateBookingStatus = async (req, res) => {
   }
 };
 
+const getSessions = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const session = await Bookings.findById(id).populate("serviceId");
+
+    return res.status(201).json({ success: true, data: session });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
 module.exports = {
   login,
   signUp,
@@ -252,4 +264,5 @@ module.exports = {
   updateProvider,
   myBooking,
   updateBookingStatus,
+  getSessions,
 };
