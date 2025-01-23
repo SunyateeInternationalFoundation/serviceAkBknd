@@ -5,10 +5,12 @@ const cors = require("cors");
 const app = express();
 
 const authRoutes = require("./routes/authRoutes");
+const sessionsRoute = require("./routes/sessions");
 
 app.use(express.json());
 app.use(cors());
 
+app.use("/sessions", sessionsRoute);
 app.use("/", authRoutes);
 
 mongoose

@@ -1,10 +1,5 @@
-const {
-  Providers,
-  Services,
-  Bookings,
-  Parents,
-  Child,
-} = require("../models/providers");
+const { Providers, Services, Parents, Child } = require("../models/providers");
+const Bookings = require("../models/booking");
 const bcrypt = require("bcrypt");
 
 const isStringInvalid = (str, type = "string") => {
@@ -30,11 +25,11 @@ const login = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Email and password is missing" });
     }
-    console.log(email)
+    console.log(email);
     const provider = await Providers.findOne({
       email,
     });
-    console.log(provider)
+    console.log(provider);
     if (provider) {
       const match = bcrypt.compare(password, provider.password);
       if (!match) {
