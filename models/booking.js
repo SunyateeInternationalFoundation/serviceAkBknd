@@ -57,6 +57,6 @@ const serviceBookingsSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-const Bookings = mongoose.model("servicebookings", serviceBookingsSchema);
+const ServiceBooking = mongoose.model("servicebookings", serviceBookingsSchema);
 
-module.exports = Bookings;
+module.exports = ServiceBooking;

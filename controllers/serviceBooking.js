@@ -1,10 +1,12 @@
-const Therapy = require("../models/booking");
+const ServiceBooking = require("../models/booking");
 
 const getTherapy = async (req, res) => {
   try {
     const therapyId = req.params.id;
 
-    const therapy = await Therapy.findById(therapyId).populate("serviceId");
+    const therapy = await ServiceBooking.findById(therapyId).populate(
+      "serviceId"
+    );
 
     if (!therapy) {
       return res.status(404).json({ message: "Therapy not found" });
@@ -21,7 +23,7 @@ const updateSession = async (req, res) => {
     const { sessionId } = req.params;
     const { assignment, feedback, videoUrl } = req.body;
 
-    const therapy = await Therapy.create({
+    const therapy = await ServiceBooking.create({
       "sessions.sessionNumber": sessionId,
     });
 
@@ -49,7 +51,7 @@ const markSessionCompleted = async (req, res) => {
   try {
     const { sessionId } = req.params;
 
-    const therapy = await Therapy.findOne({ "sessions._id": sessionId });
+    const therapy = await ServiceBooking.findOne({ "sessions._id": sessionId });
 
     if (!therapy) {
       return res.status(404).json({ message: "Session not found" });

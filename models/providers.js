@@ -34,7 +34,6 @@ const Parents = mongoose.model("parents", parentsSchema);
 module.exports = {
   Providers,
   Services,
-
   Parents,
   Child,
 };
