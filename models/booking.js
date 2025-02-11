@@ -1,8 +1,4 @@
 const mongoose = require("mongoose");
-const FeedbackSchema = new mongoose.Schema({
-  therapyFeedback: { type: String, default: "" },
-  assignment: { type: String, default: "" },
-});
 
 const SessionSchema = new mongoose.Schema({
   sessionNumber: { type: Number, required: true },
@@ -10,12 +6,12 @@ const SessionSchema = new mongoose.Schema({
   time: { type: String },
   status: {
     type: String,
-    enum: ["completed", "pending", "ongoing", "cancelled"],
-    default: "pending",
+    enum: ["completed", "ongoing", "upcoming", "cancelled"],
   },
-  notes: { type: String, default: "" },
-  feedback: { type: FeedbackSchema, default: () => ({}) },
+  assignment: { type: String, default: "" },
+  feedback: { type: String, default: "" },
   videoUrl: { type: String, default: "" },
+  completed: { type: Boolean, default: false },
 });
 
 const serviceBookingsSchema = new mongoose.Schema(
@@ -54,6 +50,18 @@ const serviceBookingsSchema = new mongoose.Schema(
       default: false,
     },
     sessions: { type: [SessionSchema], default: [] },
+    completed: {
+      type: Boolean,
+      default: false,
+    },
+    feedback: {
+      type: Boolean,
+      default: false,
+    },
+    status: {
+      type: String,
+      default: "On Going",
+    },
   },
   { timestamps: true }
 );

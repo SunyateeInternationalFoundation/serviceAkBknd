@@ -1,5 +1,7 @@
 const { Providers, Services, Parents, Child } = require("../models/providers");
 const Bookings = require("../models/booking");
+const ProvidersFeedback = require("../models/providersFeedback");
+
 const bcrypt = require("bcrypt");
 
 const isStringInvalid = (str, type = "string") => {
@@ -104,6 +106,7 @@ const getProvider = async (req, res) => {
     const { id } = req.params;
     const providers = await Providers.findById(id);
     const services = await Services.find();
+    console.log("providers", providers);
     res.status(200).json({
       message: "Providers fetched successfully",
       success: true,
@@ -126,6 +129,7 @@ const updateProvider = async (req, res) => {
     res.status(201).json({
       message: "Provider updated successfully",
       success: true,
+      data: providers,
     });
   } catch (error) {
     res.status(500).json({
@@ -251,6 +255,28 @@ const getSessions = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+const getReviews = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const reviews = await ProvidersFeedback.find({ providerId: id })
+      .populate("serviceId")
+      .populate("parentId")
+      .populate("childId");
+
+    return res.status(201).json({ success: true, data: reviews });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+const getServices = async (req, res) => {
+  try {
+    const services = await Services.find();
+    res.status(200).json({ success: true, data: services });
+  } catch (err) {
+    res.status(400).json({ message: err, success: false });
+  }
+};
 
 module.exports = {
   login,
@@ -260,4 +286,6 @@ module.exports = {
   myBooking,
   updateBookingStatus,
   getSessions,
+  getReviews,
+  getServices,
 };

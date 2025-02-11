@@ -9,5 +9,7 @@ router.put("/provider/:id", authControllers.updateProvider);
 router.get("/my-bookings/:id", authControllers.myBooking);
 router.patch("/update-booking-status", authControllers.updateBookingStatus);
 router.get("/get-sessions/:id", authControllers.getSessions);
+router.get("/reviews/:id", authControllers.getReviews);
+router.get("/get-services", authControllers.getServices);
 
 module.exports = router;

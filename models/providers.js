@@ -21,6 +21,9 @@ const providerSchema = new mongoose.Schema({
   isPhoneVerified: { type: Boolean, default: false },
   isProfileCompleted: { type: Boolean, default: false },
   isDocumentVerified: { type: Boolean, default: false },
+  days: { type: [String] },
+  times: { type: [String] },
+  sessionType: { type: String },
 });
 const servicesSchema = new mongoose.Schema({});
 const parentsSchema = new mongoose.Schema({});

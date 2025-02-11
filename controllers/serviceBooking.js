@@ -2,46 +2,43 @@ const ServiceBooking = require("../models/booking");
 
 const getTherapy = async (req, res) => {
   try {
-    const therapyId = req.params.id;
+    const { id } = req.params;
 
-    const therapy = await ServiceBooking.findById(therapyId).populate(
-      "serviceId"
-    );
+    const session = await ServiceBooking.findById(id).populate("serviceId");
 
-    if (!therapy) {
-      return res.status(404).json({ message: "Therapy not found" });
-    }
-
-    return res.status(201).json({ success: true, data: therapy });
+    return res.status(201).json({ success: true, data: session });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Server error", error });
   }
 };
 
 const updateSession = async (req, res) => {
   try {
-    const { sessionId } = req.params;
-    const { assignment, feedback, videoUrl } = req.body;
+    const { id } = req.params;
+    console.log("req.body", req.body);
+    const { updatedSessions, completed } = req.body;
 
-    const therapy = await ServiceBooking.create({
-      "sessions.sessionNumber": sessionId,
+    const updateData = { sessions: updatedSessions };
+    if (completed === true) {
+      updateData.completed = true;
+      updateData.status = "Completed";
+    }
+
+    const session = await ServiceBooking.findByIdAndUpdate(id, updateData, {
+      new: true,
     });
 
-    if (!therapy) {
-      return res.status(404).json({ message: "Session not found" });
-    }
-
-    const session = therapy.sessions.id(sessionId);
+    console.log("session", session);
     if (!session) {
-      return res.status(404).json({ message: "Session not found in therapy" });
+      return res.status(404).json({ message: "Session not updated" });
     }
 
-    if (assignment !== undefined) session.feedback.assignment = assignment;
-    if (feedback !== undefined) session.feedback.therapyFeedback = feedback;
-    if (videoUrl !== undefined) session.videoUrl = videoUrl;
-
-    await therapy.save();
-    res.json({ message: "Session updated successfully", session });
+    res.json({
+      message: "Session updated successfully",
+      session,
+      success: true,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
